@@ -1,0 +1,16 @@
+{
+  "name": "monodb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^6.4.0",
+    "mongoose": "^8.2.1"
+  }
+}

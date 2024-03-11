@@ -1,0 +1,224 @@
+runtime environment by  v8 engine -> google open source js and webassembly -> c++
+ 
+not prefered app using cpu 
+repl --- > read eval print loop  / node shell 
+
+علشان اشغل فايل في النود بفتح الترمينال في نفس مكانه
+واكتب
+node index.js (file  name )
+
+can`t used with browser apis like window dom document localstorage 
+node - > globals that what is used  
+built with c++ and js python 
+
+node js modules --> like components in react 
+built in modules + user defined modules + npm modules 
+
+const os = require("node:os");
+ : -> internal
+ user modules 
+-----------------------
+function log(m){
+  console.log(m) ;
+}
+module.exports = log
+or 
+function log(m){
+  console.log(m)
+}
+exports.add = (x)=>{
+  return x+3
+}
+exports ={
+  log :log ,
+
+}
+in my file to import 
+const logger = require("./logger");
+or 
+const log = require("./looger.js");
+
+log.add(2)
+log.log("message");
+------------------------------ 
+module are cached 
+ if you import(require) the same file many times it will run 1 time from cached 
+
+----------------------------------------
+fs--> filesystem
+I/O => refers to interaction with system disk and network
+const fs = require('node:fs');
+
+blocking code  بيشتغل بالترتيب ومش هيتحرك خطوه الا لما يخلص 
+----- ex
+const txt = fs.readFileSync("./text.txt", "utf8"); --> blocks here until file is readed
+non blocking code 
+في الغالب بيبقي اخرها sync 
+بيطلع بره الثريد بتاع التشغيل ل 
+event looop
+لما الثريد يخلص خالص يبص علي اللوب فيه حاجه لو 
+اتلاقي بيشغلها ما لاقاش خلاص 
+
+-------- ex 
+fs.readFile("./text.txt", "utf8", (err, data) => {
+	console.log(err, data);
+});
+--------------------------------------------------------------------------------------------------------------
+//read 
+make txt with dummy data
+const txt = fs.readFileSync("./text.txt","utf8");
+console.log(txt);
+fs.readFile("./text.txt", "utf8", (err, data) => {
+	console.log(err, data);
+});
+
+// wite to file
+fs.writeFile("./u.json",'ay hble ',"utf8",(err)=>{
+  if(err){console.log(err);}
+  console.log(done);
+})
+
+
+if file doesn`t exist it will be created
+const write = fs.writeFileSync("./text.txt", "I have added some text here!");
+console.log(txt);
+
+
+// delete 
+//delete
+fs.unlinkSync("./text.txt");
+============================
+prodject base toturials advice 
+============================
+
+
+streams بتحمل الداتا علي حتت مش كله مره واحده 
+زي اليوتيوب 
+streams [readable - writeable]
+ const st = fs.creatReadStream(path , options)
+ highwatermark دا الحجم في الاوبشن
+ st.on('data',(chunk)=>{
+  console.log(chunk)
+ })
+ تشانك يعني حتت 
+ =============================================
+ npm   npm init ---> packge.json 
+  npm init -y  هيثبت كله بموافق 
+ =============================================
+ lodash module library 
+const _ = require("lodash")
+library to watch node changes 
+nodemon 
+type in scriptis in packge.json 
+ "scripts": {
+    "run:dev": "nodemon index.js"
+  },
+
+  then in terminal 
+  npm run run:dev 
+  ========================
+  cli tool example
+===================================
+console.log(process.argv);
+
+if(process.argv[2] === "add"){
+  console.log("you are going to add a new command with the value " + process.argv[3]);
+}
+
+or use commander js npm 
+command line interface 
+inquirer  for user interaction cli intercase  uses ecmascript
+so in packge.json add "type" :"module",
+
+
+
+======================================
+libuv library with a focus asynchronous I/O  disk and network
+thread pool file I/O  dns ops  user code ----> thread pool + event loop to handle callbacks
+The node:crypto module provides cryptographic functionality that includes a set of wrappers for OpenSSL's hash, HMAC, cipher, decipher, sign, and verify functions.
+crypto.pbkdf2(password, salt, iterations, keylen, digest, callback)
+
+node is cpu insensitive using 1 thread 
+thread pool use 4 threads
+1st reason for using node c10k problem the porblem of optmizing network sockets to handle a large no of clients at the same time 
+ex
+const crypto = require("crypto");
+ process.env.UV_THREADPOOL_SIZE = 5; // increase the size of thread pool for better performance using the cores of devices 
+
+
+const start = performance.now();
+crypto.pbkdf2("secret", "salt", 100000, 64, "sha512", () => {
+	console.log("end of pbdf2", performance.now() - start);
+});
+crypto.pbkdf2("secret", "salt", 100000, 64, "sha512", () => {
+	console.log("end of pbdf2", performance.now() - start);
+});
+
+crypto.pbkdf2("secret", "salt", 100000, 64, "sha512", () => {
+	console.log("end of pbdf2", performance.now() - start);
+});
+
+
+network process handled by os kerenl so node is prefered for network processes 
+fetch("https://dummyjson.com/products").then(()=>{
+  console.log("end of fetch", performance.now() - start);
+});
+fetch("https://dummyjson.com/products").then(() => {
+	console.log("end of fetch", performance.now() - start);
+});
+fetch("https://dummyjson.com/products").then(() => {
+	console.log("end of fetch", performance.now() - start);
+});
+fetch("https://dummyjson.com/products").then(() => {
+	console.log("end of fetch", performance.now() - start);
+});
+note the all sync doesnt have callback function ********************************
+it`s callback will be in event loop in threadpool 
+
+each phase has a FIFO first in first out 
+timers  -> settimeout set intervals 
+pending callback --> event loop diagram 
+
+===============================================================
+const http = require('http')
+const server = http.createServer((req,res)=>{
+res.end("hello")
+})
+server.listen(3001,()=>{
+  console.log("listening on");
+})
+
+in browser localhost 3001 
+المهم من هنا 
+الكلاينت بيكلم السرفر ازاي 
+browser request to server 
+server process the request
+server response 
+all of this called http 
+======================================================
+express 
+=========================
+monogo db 
+npm i monogodb 
+or  best use mongoose 
+npm install mongoose --save
+
+jsend   standard for res
+clipboard window + v 
+
+to secure url  npm dotenv packge and make .env file adding url and port 
+then use it in connections
+cors npm 
+npm validator
+bcrptjs for hashing passwords 
+access  cart  
+
+jwt json web token jsonwentoken npm 
+multer for uploading files 
+upload to render nodejs 
+
+
+
+
+drugs 
+augmantin tariflox ciprapro moveasy decanict cympatex
